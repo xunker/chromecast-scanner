@@ -23,11 +23,11 @@ scan.rb [OPTION]
 
   --open-timeout / -O <seconds>
       
-    Time to wait for connection (default: #{$open_timeout})
+    Time to wait for connection (default: 1)
 
   --read-timeout / -R <seconds>
     
-    Time to wait for response (default: #{$read_timeout})
+    Time to wait for response (default: 1)
 
   --help / -h
 
