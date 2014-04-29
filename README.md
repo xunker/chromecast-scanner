@@ -33,6 +33,39 @@ scan.rb [OPTION]
 
     Prints this message.
 
+## Example usage
+
+If used with no options, scans all hosts in local class c network, from .1
+up to .254.
+
+```sh
+$ ./scan.rb
+I'm going to scan 1 network segments.
+Begining scan of segment 172.16.1.x
+172.16.1.1.. execution expired
+172.16.1.2.. execution expired
+<< snip >>
+172.16.1.91.. FOUND!
+<< snip >>
+172.16.1.253.. execution expired
+172.16.1.254.. execution expired
+1 Chromecasts found.
+172.16.1.91
+```
+
+You can optionally specify the network to scan and that start/end hosts.
+
+```sh
+$ ./scan.rb --segment 192.168.1 --start 40 --end 41
+I'm going to scan 1 network segments.
+Begining scan of segment 92.168.1.x
+192.168.1.40.. execution expired
+192.168.1.41.. FOUND!
+1 Chromecasts found.
+192.168.1.41
+```
+
+You can specify `--segment` multiple times to scan multiple subnets.
 
 ## Issues and TODO
 
