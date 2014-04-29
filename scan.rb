@@ -22,7 +22,7 @@ opts = GetoptLong.new(
   [ '--end', '-e', GetoptLong::OPTIONAL_ARGUMENT ],
   [ '--open-timeout', '-O', GetoptLong::OPTIONAL_ARGUMENT ],
   [ '--read-timeout', '-R', GetoptLong::OPTIONAL_ARGUMENT ],
-  [ '--help', '-h', GetoptLong::NO_ARGUMENT ],
+  [ '--help', '-h', GetoptLong::NO_ARGUMENT ]
 )
 
 class_c_networks = []
