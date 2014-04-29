@@ -13,7 +13,6 @@ if RUBY_VERSION.to_f < MINIMUM_RUBY_VERSION.to_f
 end
 
 require 'net/http'
-require 'open-uri'
 
 require 'getoptlong'
 
