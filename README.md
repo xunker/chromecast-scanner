@@ -4,6 +4,37 @@ Use it to find Google Chromecast dongles on your local network so you can
 send directly to them. Use it in cases where your wireless network has
 client isolation enabled and multicast doesn't work.
 
+## Requirements
+
+This script requires Ruby 1.9.3 or higher. It uses only Ruby standard
+library calls and does not require any external gems.
+
+## Installation
+
+Either `git clone` the entire repository or simply download `scan.rb`.
+On some systems you may need to set the mode on `scan.rb` to make it
+directly executable:
+
+```sh
+chmod 755 scan.rb
+```
+
+## Running
+
+If on a *nix system the file is set as executable (see above), you can
+run the program simple with:
+
+```sh
+$ ./scan.rb
+```
+
+On Windows or other non-*nix system, you can execute the file just as
+you would any other ruby script:
+
+```
+> ruby scan.rb
+```
+
 ## Usage
     
 scan.rb [OPTION]
