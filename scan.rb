@@ -8,7 +8,8 @@ if RUBY_VERSION.to_f < MINIMUM_RUBY_VERSION.to_f
     MINIMUM_RUBY_VERSION,
     "or higher, but was run using",
     RUBY_VERSION
-  ].join(' ') and exit
+  ].join(' ')
+  exit
 end
 
 require 'net/http'
