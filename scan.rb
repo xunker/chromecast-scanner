@@ -96,7 +96,7 @@ found = []
 def chromecast_found?(ip_address)
   http = Net::HTTP.start(
     ip_address, 8008,
-    { read_timeout: $read_timeout, open_timeout: $open_timeout }
+    { :read_timeout => $read_timeout, :open_timeout => $open_timeout }
   )
   res = http.get('/apps', { 'Accepts' => 'application/xml', 'Content-Type' => 'application/xml' })
   case res.code.to_i
