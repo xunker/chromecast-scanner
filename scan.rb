@@ -7,7 +7,7 @@ if RUBY_VERSION.to_f < MINIMUM_RUBY_VERSION.to_f
     "This program requires ruby",
     MINIMUM_RUBY_VERSION,
     "or higher, but was run using",
-    MINIMUM_RUBY_VERSION
+    RUBY_VERSION
   ].join(' ') and exit
 end
 
