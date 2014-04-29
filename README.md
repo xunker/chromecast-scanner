@@ -4,6 +4,13 @@ Use it to find Google Chromecast dongles on your local network so you can
 send directly to them. Use it in cases where your wireless network has
 client isolation enabled and multicast doesn't work.
 
+By default, the scanner will check every IP in your local network to see
+if that IP is a Chromecast. If any are found they are reported at the end
+of the run. You can then take the IP found and add it in to the "Developer
+Settings" -> "Additional receiver IPs" field in the Chrome Cast browser
+extension. The Chromecase should then show up in your list of devices you
+may cast to.
+
 ## Requirements
 
 This script requires Ruby 1.9.3 or higher. It uses only Ruby standard
