@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
+VERSION = 1.1
+
 MINIMUM_RUBY_VERSION = "1.9.3"
 
 if RUBY_VERSION.to_f < MINIMUM_RUBY_VERSION.to_f
@@ -22,12 +24,22 @@ opts = GetoptLong.new(
   [ '--end', '-e', GetoptLong::OPTIONAL_ARGUMENT ],
   [ '--open-timeout', '-O', GetoptLong::OPTIONAL_ARGUMENT ],
   [ '--read-timeout', '-R', GetoptLong::OPTIONAL_ARGUMENT ],
-  [ '--help', '-h', GetoptLong::NO_ARGUMENT ]
+  [ '--no-threads', '-T', GetoptLong::NO_ARGUMENT ],
+  [ '--thread-count', '-t', GetoptLong::OPTIONAL_ARGUMENT ],
+  [ '--help', '-h', GetoptLong::NO_ARGUMENT ],
+  [ '--version', '-v', GetoptLong::NO_ARGUMENT ]
 )
+
+# we don't thread by default, but if the user wants threads but doesn't
+# specify a number, we'll use this one
+DEFAULT_THREAD_COUNT = 50
+MAX_THREAD_COUNT = 512 # largest number of threads a user can specify
+
 
 class_c_networks = []
 host_scan_start = 1
 host_scan_end = 254
+thread_count = DEFAULT_THREAD_COUNT
 
 $open_timeout = 1
 $read_timeout = 1
@@ -60,12 +72,27 @@ scan.rb [OPTION]
   
   Time to wait for response (default: #{$read_timeout})
 
+--no-threads / -T
+  
+  Don't use multithreading (by default, multithreading will be used)
+
+--thread-count / -t <thread count>
+
+  Maximum number of threads to use (default: #{DEFAULT_THREAD_COUNT}, maximum: #{MAX_THREAD_COUNT})
+
 --help / -h
 
   Prints this message.
 
+--version / -v
+
+  Prints the version. (This is version #{VERSION})
+
     EOF
     puts(usage)
+    exit
+  when '--version'
+    puts VERSION
     exit
   when '--segment'
     class_c_networks << arg
@@ -77,6 +104,18 @@ scan.rb [OPTION]
     open_timeout = arg.to_i
   when '--read-timeout'
     read_timeout = arg.to_i
+  when '--no-threads'
+    # user doesn't want threads
+    thread_count = 0
+  when '--thread-count'
+    if arg == ''
+      # user wants threads, but we will choose the number
+      thread_count = DEFAULT_THREAD_COUNT
+    else
+      # user specified number of threads they want
+      thread_count = arg.to_i
+      thread_count = MAX_THREAD_COUNT if thread_count > MAX_THREAD_COUNT
+    end
   end
 end
 
@@ -93,7 +132,7 @@ end
 
 found = []
 
-def chromecast_found?(ip_address)
+def chromecast_found?(ip_address, opts = {})
   http = Net::HTTP.start(
     ip_address, 8008,
     { :read_timeout => $read_timeout, :open_timeout => $open_timeout }
@@ -106,24 +145,47 @@ def chromecast_found?(ip_address)
     return false
   end
 rescue Errno::ECONNREFUSED, Net::OpenTimeout, Timeout::Error, Errno::EHOSTDOWN, Errno::EHOSTUNREACH => e
-  puts e
+  puts e unless !!opts.delete(:quiet)
   return false
+end
+
+def check_ip(class_c, station, opts = {})
+  host_ip = [ class_c, station ].join('.')
+  print "#{host_ip}.. "
+  if chromecast_found?(host_ip, opts)
+    puts "FOUND!"
+    return host_ip
+  else
+    return nil
+  end
 end
 
 puts "I'm going to scan #{class_c_networks.size} network segments."
 class_c_networks.each do |class_c|
   puts "Begining scan of segment #{class_c}.x"
+  threads = []
+  puts "Using #{thread_count} threads"
   host_scan_start.upto(host_scan_end).each do |station|
-    host_ip = [ class_c, station ].join('.')
-    print "#{host_ip}.. "
-    if chromecast_found?(host_ip)
-      puts "FOUND!"
-      found << host_ip
+    if thread_count > 0
+      threads << Thread.new do
+        found << check_ip(class_c, station, quiet: true)
+      end
+      if threads.size >= thread_count
+        puts "\nWaiting for #{threads.size} threads to catch up..."
+        if threads.all?(&:join)
+          threads.reject!{|t| !t.status }
+        end
+      end
+    else
+      found << check_ip(class_c, station)
     end
   end
+  threads.all?(&:join)
 end
 
-puts "#{found.length} Chromecasts found."
+found.compact!
+
+puts "\n#{found.length} Chromecasts found."
 found.each do |ip|
   puts ip
 end

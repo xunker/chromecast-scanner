@@ -46,38 +46,50 @@ you would any other ruby script:
     
 scan.rb [OPTION]
 
-  --segment / -S <class c>
+--segment / -S <class c>
 
-    Specify the class c network secgment to scan. Expects a format
-    like this: 172.16.1
+  Specify the class c network secgment to scan. Expects a format
+  like this: 172.16.1
 
-  --start / -s <number>
+--start / -s <number>
 
-    The host on which to start the scan in the given class c.
+  The host on which to start the scan in the given class c.
 
-  --end / -e <number>
+--end / -e <number>
 
-    The host on which to end the scan in the given class c.
+  The host on which to end the scan in the given class c.
 
-  --open-timeout / -O <seconds>
-      
-    Time to wait for connection (default: 1)
-
-  --read-timeout / -R <seconds>
+--open-timeout / -O <seconds>
     
-    Time to wait for response (default: 1)
+  Time to wait for connection (default: 1)
 
-  --help / -h
+--read-timeout / -R <seconds>
+  
+  Time to wait for response (default: 1)
 
-    Prints this message.
+--no-threads / -T
+  
+  Don't use multithreading (by default, multithreading will be used)
+
+--thread-count / -t <thread count>
+
+  Maximum number of threads to use (default: 50, maximum: 512)
+
+--help / -h
+
+  Prints this message.
 
 ## Example usage
+
+> #### NOTE
+> The `--no-threads` flag used in the examples below is not required.
+> It is used here to make the examples more readable.
 
 If used with no options, scans all hosts in local class c network, from .1
 up to .254.
 
 ```sh
-$ ./scan.rb
+$ ./scan.rb --no-threads
 I'm going to scan 1 network segments.
 Begining scan of segment 172.16.1.x
 172.16.1.1.. execution expired
@@ -94,7 +106,7 @@ Begining scan of segment 172.16.1.x
 You can optionally specify the network to scan and that start/end hosts.
 
 ```sh
-$ ./scan.rb --segment 192.168.1 --start 40 --end 41
+$ ./scan.rb --no-threads --segment 192.168.1 --start 40 --end 41
 I'm going to scan 1 network segments.
 Begining scan of segment 92.168.1.x
 192.168.1.40.. execution expired
