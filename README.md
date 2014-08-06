@@ -6,10 +6,16 @@ client isolation enabled and multicast doesn't work.
 
 By default, the scanner will check every IP in your local network to see
 if that IP is a Chromecast. If any are found they are reported at the end
-of the run. You can then take the IP found and add it in to the "Developer
-Settings" -> "Additional receiver IPs" field in the Chrome Cast browser
-extension. The Chromecase should then show up in your list of devices you
-may cast to.
+of the run.
+
+As of Apr 30 2014, you will need to be running [the 'beta' version of the
+Google Cast extension for the Chrome browser](https://chrome.google.com/webstore/detail/google-cast-beta/dliochdbjfkdbacpmhlcpmleaejidimm) (Tested with v14.421.1.0).
+
+Click the Google Cast extension, choose options and scroll to the bottom
+of the window to the "Developer Settings" section. In the subsection
+titled "Additional receiver IPs", enter the IP address of the Chromecast
+in the text field provided and click "add". This should cause that
+Chromecast to show up in your list of available devices.
 
 ## Requirements
 
